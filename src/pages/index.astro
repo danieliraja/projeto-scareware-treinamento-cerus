@@ -6,11 +6,18 @@ import Layout from "../layouts/Layout.astro";
   <main
     class="bg-black min-h-screen flex flex-col align-middle justify-center mx-auto px-8 py-10"
   >
-    <div class="text-center">
+    <div class="text-center" id="check">
+      <h1>Verificação de Segurança em Andamento...</h1>
+      <div id="progress-bar">
+        <div id="progress"></div>
+      </div>
+      <p>Não desligue o computador! Isso pode demorar um pouco.</p>
+    </div>
+    <div class="text-center hidden" id="alert">
       <img src="images/virus.png" alt="" class="w-1/3 mx-auto" />
       <h1 class="text-4xl font-bold text-red-700">Alerta de Vírus!</h1>
       <p class="text-2xl text-red-100">
-        Seu computador foi infectado por um vírus perigoso!
+        Seu dispositivo foi infectado por um vírus perigoso!
       </p>
       <p class="text-1xl text-slate-950 pt-4 font-medium">
         Por favor, entre em contato com o suporte técnico imediatamente!
@@ -21,23 +28,62 @@ import Layout from "../layouts/Layout.astro";
       >
     </div>
   </main>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #progress-bar {
+      width: 80%;
+      height: 30px;
+      background-color: #333;
+      border-radius: 15px;
+      margin: 50px auto;
+      overflow: hidden;
+    }
+    #progress {
+      width: 0;
+      height: 100%;
+      background-color: red;
+      transition: width 2s ease-in-out;
+    }
+    p {
+      font-size: 1.5em;
+    }
+  </style>
 </Layout>
 
 <script>
+  let progress = 0;
+  const progressBar = document.getElementById("progress");
+  const check = document.getElementById("check");
+  const alert = document.getElementById("alert");
+
+  function fakeProgress() {
+    if (progressBar && progress < 100) {
+      progress += Math.random() * 10;
+      progressBar.style.width = progress + "%";
+      setTimeout(fakeProgress, 500);
+    } else {
+      if (progressBar && progress > 99) {
+        progressBar.style.width = "100%";
+        const h1 = document.querySelector("h1");
+        if (h1) h1.innerText = "Verificação Concluída!";
+        check?.classList.add("hidden");
+        setTimeout(function () {
+          alert?.classList.remove("hidden");
+        }, 2000);
+      }
+    }
+  }
+
+  fakeProgress();
   setInterval(function () {
     const main = document.querySelector("main");
     if (main)
       main.style.backgroundColor =
         "#" + Math.floor(Math.random() * 16777215).toString(16);
-  }, 250);
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      var latitude = position.coords.latitude;
-      var longitude = position.coords.longitude;
-      console.log("Latitude: " + latitude + " - Longitude: " + longitude);
-    });
-  } else {
-    console.log("Geolocalização não é suportada pelo seu navegador.");
-  }
+  }, 150);
 </script>
