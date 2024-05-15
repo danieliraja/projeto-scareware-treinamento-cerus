@@ -59,35 +59,46 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <script>
-  let progress = 0;
-  const progressBar = document.getElementById("progress");
-  const check = document.getElementById("check");
-  const alert = document.getElementById("alert");
+ let progress = 0;
+const progressBar = document.getElementById("progress");
+const check = document.getElementById("check");
+const alertBox = document.getElementById("alert");
 
-  function fakeProgress() {
-    if (progressBar && progress < 100) {
-      progress += Math.random() * 10;
-      progressBar.style.width = progress + "%";
-      setTimeout(fakeProgress, 500);
-    } else {
-      if (progressBar && progress > 99) {
-        progressBar.style.width = "100%";
-        const h1 = document.querySelector("h1");
-        if (h1) h1.innerText = "Verificação Concluída!";
-
-        setTimeout(function () {
-          check?.classList.add("hidden");
-          alert?.classList.remove("hidden");
-          setInterval(function () {
-            const main = document.querySelector("main");
-            if (main)
-              main.style.backgroundColor =
-                "#" + Math.floor(Math.random() * 16777215).toString(16);
-          }, 150);
-        }, 2000);
-      }
-    }
+function fakeProgress() {
+  if (!progressBar || progress >= 100) {
+    return;
   }
 
-  fakeProgress();
+  progress += Math.random() * 10;
+  progressBar.style.width = Math.min(progress, 100) + "%";
+
+  if (progress >= 100) {
+    progressBar.style.width = "100%";
+    const h1 = document.querySelector("h1");
+    if (h1) h1.innerText = "Verificação Concluída!";
+
+    setTimeout(function () {
+      if (check) check.classList.add("hidden");
+      if (alertBox) alertBox.classList.remove("hidden");
+      changeBackgroundColor();
+    }, 2000);
+  } else {
+    setTimeout(fakeProgress, 500);
+  }
+}
+
+function changeBackgroundColor() {
+  const main = document.querySelector("main");
+  if (!main) return;
+  main.style.backgroundColor = generateRandomColor();
+  setTimeout(changeBackgroundColor, 150);
+}
+
+function generateRandomColor() {
+  return "#" + Math.floor(Math.random() * 16777215).toString(16);
+}
+
+// Iniciar o progresso falso
+fakeProgress();
+
 </script>
