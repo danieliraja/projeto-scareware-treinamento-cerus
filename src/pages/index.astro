@@ -7,11 +7,14 @@ import Layout from "../layouts/Layout.astro";
     class="bg-black min-h-screen flex flex-col align-middle justify-center mx-auto px-8 py-10"
   >
     <div class="text-center" id="check">
-      <h1>Verificação de Segurança em Andamento...</h1>
+      <img src="images/antivirus.png" alt="" class="w-1/3 mx-auto" />
+      <h1 class="text-4xl font-bold mt-8">
+        Verificação de Segurança em Andamento...
+      </h1>
       <div id="progress-bar">
         <div id="progress"></div>
       </div>
-      <p>Não desligue o computador! Isso pode demorar um pouco.</p>
+      <p>Por favor aguarde...</p>
     </div>
     <div class="text-center hidden" id="alert">
       <img src="images/virus.png" alt="" class="w-1/3 mx-auto" />
@@ -71,19 +74,20 @@ import Layout from "../layouts/Layout.astro";
         progressBar.style.width = "100%";
         const h1 = document.querySelector("h1");
         if (h1) h1.innerText = "Verificação Concluída!";
-        check?.classList.add("hidden");
+
         setTimeout(function () {
+          check?.classList.add("hidden");
           alert?.classList.remove("hidden");
+          setInterval(function () {
+            const main = document.querySelector("main");
+            if (main)
+              main.style.backgroundColor =
+                "#" + Math.floor(Math.random() * 16777215).toString(16);
+          }, 150);
         }, 2000);
       }
     }
   }
 
   fakeProgress();
-  setInterval(function () {
-    const main = document.querySelector("main");
-    if (main)
-      main.style.backgroundColor =
-        "#" + Math.floor(Math.random() * 16777215).toString(16);
-  }, 150);
 </script>
